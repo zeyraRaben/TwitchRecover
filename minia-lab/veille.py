@@ -121,9 +121,26 @@ def carte(v):
     img = f'<img src="{image_inline(image)}" alt="">' if image else '<div class="vide">pas de miniature</div>'
     chaine = f'{html.escape(v["chaine"])} · ' if v.get("chaine") else ""
     abonnes = f' · {v["x_abonnes"]}× les abonnés' if v.get("x_abonnes") else ""
+    score = f'<b>×{v["score"]}</b> · ' if v.get("score") is not None else ""
     return (f'<a class="carte" href="{lien}" target="_blank">{img}'
             f'<div class="titre">{html.escape(v["titre"] or "")}</div>'
-            f'<div class="stats">{chaine}<b>×{v["score"]}</b> · {nombre(v["vues"])} vues{abonnes}</div></a>')
+            f'<div class="stats">{chaine}{score}{nombre(v["vues"])} vues{abonnes}</div></a>')
+
+
+def page(titre, intro, blocs):
+    return f"""<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(titre)}</title>
+<style>
+body{{margin:0;padding:24px 16px;background:#0f0f0f;color:#f1f1f1;font:14px/1.4 system-ui,sans-serif}}
+h1{{margin:0 0 4px}} h2{{margin:40px 0 8px;border-bottom:1px solid #333;padding-bottom:6px}}
+h2 span{{font-size:13px;font-weight:400;color:#aaa}} h3{{color:#2dd4bf;font-size:13px;text-transform:uppercase}}
+h3.flop{{color:#f87171}}
+.grille{{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}}
+.carte{{color:inherit;text-decoration:none}} .carte img,.vide{{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;background:#222}}
+.titre{{margin-top:6px;font-weight:600}} .stats{{color:#aaa;font-size:12px}} .stats b{{color:#f1f1f1}}
+</style></head><body><h1>{html.escape(titre)}</h1>
+<p style="color:#aaa">{html.escape(intro)}</p>
+{"".join(blocs)}</body></html>"""
 
 
 def planche(resultats):
@@ -135,19 +152,7 @@ def planche(resultats):
             f'<h2>{html.escape(r["nom"])} <span>{nombre(r["abonnes"] or 0)} abonnés · médiane {nombre(r["mediane"])} vues · {r["nb_videos"]} vidéos</span></h2>'
             + '<h3>Surperforment</h3><div class="grille">' + "".join(carte(v) for v in r["surperforment"]) + "</div>"
             + '<h3 class="flop">Sous-performent</h3><div class="grille">' + "".join(carte(v) for v in r["sous_performent"]) + "</div>")
-    return f"""<!doctype html><html lang="fr"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1"><title>Veille miniatures</title>
-<style>
-body{{margin:0;padding:24px 16px;background:#0f0f0f;color:#f1f1f1;font:14px/1.4 system-ui,sans-serif}}
-h1{{margin:0 0 4px}} h2{{margin:40px 0 8px;border-bottom:1px solid #333;padding-bottom:6px}}
-h2 span{{font-size:13px;font-weight:400;color:#aaa}} h3{{color:#2dd4bf;font-size:13px;text-transform:uppercase}}
-h3.flop{{color:#f87171}}
-.grille{{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}}
-.carte{{color:inherit;text-decoration:none}} .carte img,.vide{{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:8px;background:#222}}
-.titre{{margin-top:6px;font-weight:600}} .stats{{color:#aaa;font-size:12px}} .stats b{{color:#f1f1f1}}
-</style></head><body><h1>Veille miniatures</h1>
-<p style="color:#aaa">Score = vues ÷ médiane de la chaîne. ×2 = deux fois plus de vues que d'habitude.</p>
-{"".join(blocs)}</body></html>"""
+    return page("Veille miniatures", "Score = vues ÷ médiane de la chaîne. ×2 = deux fois plus de vues que d'habitude.", blocs)
 
 
 def main():

@@ -1,0 +1,12 @@
+# Une chaîne par ligne (handle YouTube). Les lignes qui commencent par # sont ignorées.
+@SgauthYT
+@ego_one
+@TheGreatReview
+@ASTRE_TV
+@lacrimosophia
+@Micode
+@Kombo000
+@WhataFail
+@FogMine
+@JusteTRY
+# ISOND : lien manquant
